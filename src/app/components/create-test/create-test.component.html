@@ -1,0 +1,37 @@
+<div>
+  <h2>Template Erstellen</h2>
+  <span>Tests werden auf Basis von Templates erstellt. Erstelle zunächst ein Template, um daraus eine Menge an QR Codes zu generieren</span>
+  <ol>
+    <li>Füge einen Test Hinzu</li>
+    <li>Ergänze die Daten des Tests.</li>
+    <li>(Optional) Ergänze weitere Tests.</li>
+    <li>Drücke QR Code(s) Generieren</li>
+  </ol>
+  <p>
+    Test Templates lassen sich auch speichern und neu laden
+  </p>
+</div>
+<div>
+  <mat-form-field style="width: 350px">
+    <mat-label>Ausstellende Organisation</mat-label>
+    <mat-select [ngModel]="(request$ | async).clientId" (ngModelChange)="setClientId($event)" style="width: 100%">
+      <mat-option>Keine</mat-option>
+      <mat-option *ngFor="let client of clients$ | async" [value]="client.id">
+        {{client.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div style="width: 100%; display: flex; flex-direction: column">
+  <app-create-test-single-test *ngFor="let test of (request$ | async).testRequests; index as i; trackBy: trackByIndex"
+                               [test]="test"
+                               (delete)="deleteTest(i)"
+                               (update)="updateTest(i, $event)"
+  ></app-create-test-single-test>
+</div>
+<div>
+  <button mat-button (click)="addTest()">Test Hinzufügen</button>
+  <button mat-button (click)="generate()">QR Codes Generieren</button>
+</div>
+

@@ -1,0 +1,11 @@
+<mat-form-field>
+  <mat-label>Test-Titel</mat-label>
+  <input matInput [ngModel]="test.title" (ngModelChange)="setTitle($event)">
+</mat-form-field>
+<mat-form-field>
+  <mat-label>ICD-Code</mat-label>
+  <input matInput [ngModel]="test.icdCode" (ngModelChange)="setIcdCode($event)">
+</mat-form-field>
+<button mat-icon-button aria-label="Delete the test" (click)="delete.emit()">
+  <mat-icon>delete</mat-icon>
+</button>
