@@ -2,9 +2,15 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// from config.js
+declare const CLIENT_ID: string;
+declare const AZURE_AD_AUTHORITY: string;
+
 export const environment = {
   production: false,
-  testbefundPatientUrl: ''
+  testbefundPatientUrl: '',
+  clientId: CLIENT_ID,
+  authority: AZURE_AD_AUTHORITY,
 };
 
 /*

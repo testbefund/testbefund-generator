@@ -11,7 +11,7 @@
     Test Templates lassen sich auch speichern und neu laden
   </p>
 </div>
-<div>
+<div class="clients-container">
   <mat-form-field style="width: 350px">
     <mat-label>Ausstellende Organisation</mat-label>
     <mat-select [ngModel]="(request$ | async).clientId" (ngModelChange)="setClientId($event)" style="width: 100%">
@@ -21,6 +21,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <button mat-button (click)="reloadClients()">Reload</button>
 </div>
 
 <div style="width: 100%; display: flex; flex-direction: column">

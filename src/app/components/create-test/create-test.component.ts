@@ -10,7 +10,7 @@ import {TestToCreate} from '@api/model/testToCreate';
 @Component({
   selector: 'app-create-test',
   templateUrl: './create-test.component.html',
-  styleUrls: ['./create-test.component.css']
+  styleUrls: ['./create-test.component.scss']
 })
 export class CreateTestComponent implements OnInit {
 
@@ -49,5 +49,9 @@ export class CreateTestComponent implements OnInit {
 
   generate(): void {
     this.store.dispatch(TestbefundActions.createTestContainer());
+  }
+
+  reloadClients(): void {
+    this.store.dispatch(TestbefundActions.loadClients());
   }
 }

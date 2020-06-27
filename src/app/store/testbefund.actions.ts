@@ -5,7 +5,7 @@ import {TestContainer} from '@api/model/testContainer';
 
 export const TestbefundActions = {
   loadClients: createAction('[Testbefund] Load clients'),
-  loadClientsSuccess: createAction('[Testbefund] Load clients', props<{clients: Client[]}>()),
+  loadClientsSuccess: createAction('[Testbefund] Load clients success', props<{clients: Client[]}>()),
   loadClientsFailed: createAction('[Testbefund] Load clients failed'),
   addTestToCreate: createAction('[Testbefund] Add test to create', props<{test: TestToCreate}>()),
   removeTestToCreate: createAction('[Testbefund] Remove test to create', props<{index: number}>()),
