@@ -3,6 +3,7 @@ import {testbefundDefaultStore, TestbefundStore} from './testbefund.store';
 import {TestbefundActions} from './testbefund.actions';
 import {TestToCreate} from '@api/model/testToCreate';
 import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
+import {Test} from 'tslint';
 
 function addTestToCreate(state: TestbefundStore, testToCreate: TestToCreate): TestbefundStore {
   const request: CreateTestContainerRequest = {
@@ -64,6 +65,11 @@ const reducer = createReducer(testbefundDefaultStore,
   on(TestbefundActions.updateTestToCreate, (state, {test, index}) => updateTestToCreate(state, test, index)),
   on(TestbefundActions.removeTestToCreate, (state, {index}) => removeTestToCreate(state, index)),
   on(TestbefundActions.setClientId, (state, {clientId}) => setClientId(state, clientId)),
+  on(TestbefundActions.setRequest, (state, {request}) => ({...state, request})),
+  on(TestbefundActions.setContainersToCreate, (state, {containersToCreate}) => ({...state, containersToCreate})),
+  on(TestbefundActions.createTestContainer, state => ({...state, containerCreating: true})),
+  on(TestbefundActions.createTestContainerFailed, state => ({...state, containerCreating: false})),
+  on(TestbefundActions.createTestContainerSuccess, state => ({...state, containerCreating: false})),
 );
 
 export function testbefundReducer(state: TestbefundStore, action: Action): TestbefundStore {

@@ -1,0 +1,5 @@
+<span *ngIf="error" class="code-error">{{error}}</span>
+<textarea cols="63" [rows]="countRows()"
+          [ngModel]="requestAsJson()"
+          (ngModelChange)="updateContainer($event)">
+</textarea>

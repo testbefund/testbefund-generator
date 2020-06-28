@@ -16,6 +16,9 @@ export class CreateTestComponent implements OnInit {
 
   clients$: Observable<Client[]>;
   request$: Observable<CreateTestContainerRequest>;
+  testsToCreate$: Observable<number>;
+  creating$: Observable<boolean>;
+
 
   constructor(private store: Store) {
   }
@@ -25,11 +28,13 @@ export class CreateTestComponent implements OnInit {
     this.store.dispatch(TestbefundActions.loadClients());
     this.clients$ = this.store.select(TestbefundSelectors.selectClients);
     this.request$ = this.store.select(TestbefundSelectors.selectRequest);
+    this.testsToCreate$ = this.store.select(TestbefundSelectors.selectContainersToCreate);
+    this.creating$ = this.store.select(TestbefundSelectors.selectContainerCreating);
   }
 
   trackByIndex = (index: number, obj: object): number => {
     return index;
-  };
+  }
 
   setClientId(clientId: string): void {
     this.store.dispatch(TestbefundActions.setClientId({clientId}));
@@ -53,5 +58,13 @@ export class CreateTestComponent implements OnInit {
 
   reloadClients(): void {
     this.store.dispatch(TestbefundActions.loadClients());
+  }
+
+  setRequest(request: CreateTestContainerRequest): void {
+    this.store.dispatch(TestbefundActions.setRequest({request}));
+  }
+
+  setContainersToCreate(containersToCreate: number): void {
+    this.store.dispatch(TestbefundActions.setContainersToCreate({containersToCreate}));
   }
 }

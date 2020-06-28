@@ -27,4 +27,6 @@ Because of this, QR code rendering looks like this:
 
 If you know a smoother way to create these document, please let us know!
 
+## Target format
 
+Please refer to [this store](https://www.etikettenhandel.de/emax_shop_images/endisch/laseretiketten/pdf/50x70_6505070_info.pdf)

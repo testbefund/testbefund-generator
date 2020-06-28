@@ -7,10 +7,9 @@ import {
 } from '../generated/testbefund-api';
 import {TestbefundActions} from './testbefund.actions';
 import {catchError, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {Action, Store} from '@ngrx/store';
 import {TestbefundSelectors} from './testbefund.selectors';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {NotificationService} from '../service/notification.service';
 import {PdfCreatorService} from '../service/pdf-creator.service';
 
@@ -24,8 +23,11 @@ export class TestbefundEffects {
 
   createContainer$ = createEffect(() => this.actions$.pipe(
     ofType(TestbefundActions.createTestContainer),
-    withLatestFrom(this.store.select(TestbefundSelectors.selectRequest)),
-    switchMap(([_, request]) => this.createContainer(request))
+    withLatestFrom(
+      this.store.select(TestbefundSelectors.selectRequest),
+      this.store.select(TestbefundSelectors.selectContainersToCreate)
+    ),
+    switchMap(([_, request, containersToCreate]) => this.createContainer(request, containersToCreate))
   ));
 
   constructor(private actions$: Actions,
@@ -48,10 +50,12 @@ export class TestbefundEffects {
     );
   }
 
-  private createContainer(request: CreateTestContainerRequest): Observable<Action> {
-    return this.testController.createTestContainerUsingPOST(request).pipe(
-      tap(result => this.pdfCreatorService.createAndDownloadPdf(result)),
-      map(container => TestbefundActions.createTestContainerSuccess({container})),
+  private createContainer(request: CreateTestContainerRequest, count: number): Observable<Action> {
+    const observables = [...Array(count).keys()].map(i => this.testController.createTestContainerUsingPOST(request));
+    console.log(observables);
+    return forkJoin(observables).pipe(
+      tap(containers => this.pdfCreatorService.createAndDownloadPdf(containers)),
+      map(containers => TestbefundActions.createTestContainerSuccess({containers})),
       catchError(err => {
         console.log(err);
         this.notificationService.showError('QR Codes konnten nicht erstellt werden.');

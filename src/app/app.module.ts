@@ -17,13 +17,16 @@ import {CreateTestSingleTestComponent} from './components/create-test/create-tes
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
-import {RouterModule} from '@angular/router';
 import {BASE_PATH} from '@api/variables';
 import {OAuthModule} from 'angular-oauth2-oidc';
 import {TestbefundAuthInterceptor} from './interceptors/testbefund-auth-interceptor.service';
-import {AuthGuard} from './guards/auth.guard';
-import { LoginSuccessComponent } from './components/login-success/login-success.component';
+import {LoginSuccessComponent} from './components/login-success/login-success.component';
 import {AppRoutingModule} from './app-routing.module';
+import {MatCardModule} from '@angular/material/card';
+import {MatTabsModule} from '@angular/material/tabs';
+import {CreateTestInfoComponent} from './components/create-test/create-test-info/create-test-info.component';
+import {CreateSingleTestCodeComponent} from './components/create-test/create-single-test-code/create-single-test-code.component';
+import { CreateTestControlsComponent } from './components/create-test/create-test-controls/create-test-controls.component';
 
 declare const TESTBEFUND_API_URL: string;
 
@@ -42,6 +45,9 @@ const materialModules = [
     CreateTestComponent,
     CreateTestSingleTestComponent,
     LoginSuccessComponent,
+    CreateTestInfoComponent,
+    CreateSingleTestCodeComponent,
+    CreateTestControlsComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +62,8 @@ const materialModules = [
     BrowserAnimationsModule,
     ...materialModules,
     OAuthModule.forRoot(),
+    MatCardModule,
+    MatTabsModule,
   ],
   providers: [
     {

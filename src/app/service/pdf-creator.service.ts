@@ -6,6 +6,18 @@ import {environment} from '../../environments/environment';
 import {TestContainer} from '@api/model/testContainer';
 
 
+function labTitle(writeId: string): string {
+  const firstFive = writeId.slice(0, 4);
+  return `Labor Code (#${firstFive})`;
+}
+
+function patientTitle(readId: string): string {
+  const firstFive = readId.slice(0, 4);
+  const r = `Patienten Code (#${firstFive})`;
+  console.log('code ' + r);
+  return r;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,17 +26,40 @@ export class PdfCreatorService {
   constructor() {
   }
 
-  createAndDownloadPdf(result: TestContainer): void {
+  createAndDownloadPdf(results: TestContainer[]): void {
     // Default iS A4, portrait mode, 210mm width, 297mm height
-    // Each QR code will be 90x90mm
-    const readUrl = `${environment.testbefundPatientUrl}?readId=${result.readId}`;
+    // Each QR code sticker will be 50mm width and 70mm height
+    // QR codes will have a margin of 2.5mm on each side, resulting in
+    // QR code image width of 45mm
+    // left and right margin are 5mm
+    // top and bottom margin are 8.5mm
+    // x = left to right
+    // y = top to bottom
     const date = new Date();
-    this.addQrCodeToPdf(new jsPDF({unit: 'mm', format: 'a4'}), readUrl, 'Patient Code (1)', 10, 10)
-      .then(pdf => this.addQrCodeToPdf(pdf, readUrl, 'Patient Code (2)', 110, 10))
-      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, 'Labor Code (1)', 10, 185))
-      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, 'Labor Code (2)', 110, 185))
-      .then(pdf => pdf.save(`QR_Codes_${date.toISOString()}.pdf`));
+    const pdf = new jsPDF({unit: 'mm', format: 'a4'});
+    const promises = results.map((result, index) => this.renderContainer(pdf, result, index));
+    Promise.all(promises)
+      .then(() => pdf.save(`QR_Codes_${date.toISOString()}.pdf`));
   }
+
+  private renderContainer(pdf: jsPDF, result: TestContainer, row: number): Promise<jsPDF> {
+    return this.renderRow(pdf, result, row);
+  }
+
+  private renderRow(p: jsPDF, result: TestContainer, row: number): Promise<jsPDF> {
+    const readUrl = `${environment.testbefundPatientUrl}?readId=${result.readId}`;
+    const leftOffset = 5;
+    const topOffset = (row * 70) + 8.5;
+    const firstColOffset = leftOffset + 2.5;
+    const secondColOffset = firstColOffset + 50;
+    const thirdColOffset = secondColOffset + 50;
+    const fourthColOffset = thirdColOffset + 50;
+    return this.addQrCodeToPdf(p, readUrl, patientTitle(result.readId), firstColOffset, topOffset)
+      .then(pdf => this.addQrCodeToPdf(pdf, readUrl, patientTitle(result.readId),  secondColOffset, topOffset))
+      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), thirdColOffset, topOffset))
+      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), fourthColOffset, topOffset));
+  }
+
 
   private renderQrCode(options: any): Promise<string> {
     return new Promise<string>(
@@ -55,7 +90,10 @@ export class PdfCreatorService {
         // Remove the 'data:image/png;base64,' from image content.
         const base64PNG = imageContent.substring(22, imageContent.length);
         console.log({base64PNG, imageContent, x, y});
-        pdfDocument.addImage(base64PNG, 'PNG', x, y, 90, 102.12);
+        // width:height factor = 0,881316
+        const factor = 0.881316;
+        const width = 45;
+        pdfDocument.addImage(base64PNG, 'PNG', x, y, width, width / factor);
         return pdfDocument;
       });
   }
