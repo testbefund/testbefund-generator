@@ -4,6 +4,7 @@ import * as QRCode from 'easyqrcodejs';
 import jsPDF from 'jspdf';
 import {environment} from '../../environments/environment';
 import {TestContainer} from '@api/model/testContainer';
+import {partitionArray} from '../utils';
 
 
 function labTitle(writeId: string): string {
@@ -26,7 +27,7 @@ export class PdfCreatorService {
   constructor() {
   }
 
-  createAndDownloadPdf(results: TestContainer[]): void {
+  async createAndDownloadPdf(results: TestContainer[]): Promise<TestContainer[]> {
     // Default iS A4, portrait mode, 210mm width, 297mm height
     // Each QR code sticker will be 50mm width and 70mm height
     // QR codes will have a margin of 2.5mm on each side, resulting in
@@ -37,9 +38,25 @@ export class PdfCreatorService {
     // y = top to bottom
     const date = new Date();
     const pdf = new jsPDF({unit: 'mm', format: 'a4'});
-    const promises = results.map((result, index) => this.renderContainer(pdf, result, index));
-    Promise.all(promises)
-      .then(() => pdf.save(`QR_Codes_${date.toISOString()}.pdf`));
+
+    const partitions = partitionArray(results, 4)
+      .filter(arr => arr.length > 0);
+    const pagesToCreate = partitions.length - 1;
+    // PDFs always have one page after creation. Add one page for each partition, minus first page
+    [...Array(pagesToCreate).keys()].forEach(() => pdf.addPage('a4', 'p'));
+    for (let i = 0; i < partitions.length; i++) {
+      // Using await here so pages don't get mixed up in case something happens concourrently
+      // Important because we are using setTimeout further down.
+      await this.renderPage(pdf, partitions[i], i);
+    }
+    pdf.save(`QR_Codes_${date.toISOString()}.pdf`);
+    return Promise.all(results);
+  }
+
+  private renderPage(pdf: jsPDF, containers: TestContainer[], page: number): Promise<jsPDF> {
+    pdf.setPage(page);
+    const promises = containers.map((result, index) => this.renderContainer(pdf, result, index));
+    return Promise.all(promises).then(value => pdf);
   }
 
   private renderContainer(pdf: jsPDF, result: TestContainer, row: number): Promise<jsPDF> {
@@ -55,7 +72,7 @@ export class PdfCreatorService {
     const thirdColOffset = secondColOffset + 50;
     const fourthColOffset = thirdColOffset + 50;
     return this.addQrCodeToPdf(p, readUrl, patientTitle(result.readId), firstColOffset, topOffset)
-      .then(pdf => this.addQrCodeToPdf(pdf, readUrl, patientTitle(result.readId),  secondColOffset, topOffset))
+      .then(pdf => this.addQrCodeToPdf(pdf, readUrl, patientTitle(result.readId), secondColOffset, topOffset))
       .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), thirdColOffset, topOffset))
       .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), fourthColOffset, topOffset));
   }
