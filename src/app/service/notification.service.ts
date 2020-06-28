@@ -11,4 +11,8 @@ export class NotificationService {
   showError(msg: string): void {
     this.zone.run(args => this.snackBar.open(msg, 'Error'));
   }
+
+  showInfo(msg: string): void {
+    this.zone.run(args => this.snackBar.open(msg, 'OK'));
+  }
 }

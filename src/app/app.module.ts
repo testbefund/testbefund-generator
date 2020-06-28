@@ -22,6 +22,8 @@ import {BASE_PATH} from '@api/variables';
 import {OAuthModule} from 'angular-oauth2-oidc';
 import {TestbefundAuthInterceptor} from './interceptors/testbefund-auth-interceptor.service';
 import {AuthGuard} from './guards/auth.guard';
+import { LoginSuccessComponent } from './components/login-success/login-success.component';
+import {AppRoutingModule} from './app-routing.module';
 
 declare const TESTBEFUND_API_URL: string;
 
@@ -39,12 +41,14 @@ const materialModules = [
     AppComponent,
     CreateTestComponent,
     CreateTestSingleTestComponent,
+    LoginSuccessComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     ApiModule,
+    AppRoutingModule,
     StoreModule.forRoot({
       testbefund: testbefundReducer
     }),
@@ -52,17 +56,6 @@ const materialModules = [
     BrowserAnimationsModule,
     ...materialModules,
     OAuthModule.forRoot(),
-    RouterModule.forRoot([
-      {
-        path: 'create',
-        component: CreateTestComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: '**',
-        redirectTo: 'create'
-      }
-    ]),
   ],
   providers: [
     {

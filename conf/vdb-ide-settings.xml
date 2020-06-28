@@ -1,0 +1,6 @@
+<code_scheme name="vdb-ide-settings" version="173">
+  <TypeScriptCodeStyleSettings version="0">
+    <option name="USE_DOUBLE_QUOTES" value="false" />
+    <option name="BLACKLIST_IMPORTS" value="rxjs/Rx,node_modules/**,**/node_modules/**,@angular/material,@angular/material/typings/**,primeng,primeng/primeng,primeng/public_api" />
+  </TypeScriptCodeStyleSettings>
+</code_scheme>

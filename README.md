@@ -31,6 +31,8 @@ or your own.
 You can easily set up your own Azure AD and your own application. To do so, please follow 
 [Microsoft's Guide to Applications](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
 
+You will want to set the redirect URl to ``http://localhost:4200/login-successful``
+
 **IMPORTANT** When setting up the redirect URLs, make sure to select ``Web Application`` to 
 be able to use the auth code flow!
 
