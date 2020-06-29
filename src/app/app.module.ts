@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {StoreModule} from '@ngrx/store';
+import {ActionReducer, MetaReducer, StoreModule} from '@ngrx/store';
 import {testbefundReducer} from './store/testbefund.reducer';
 import {EffectsModule} from '@ngrx/effects';
 import {TestbefundEffects} from './store/testbefund.effects';
@@ -27,6 +27,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {CreateTestInfoComponent} from './components/create-test/create-test-info/create-test-info.component';
 import {CreateSingleTestCodeComponent} from './components/create-test/create-single-test-code/create-single-test-code.component';
 import { CreateTestControlsComponent } from './components/create-test/create-test-controls/create-test-controls.component';
+import { localStorageSync } from 'ngrx-store-localstorage';
 
 declare const TESTBEFUND_API_URL: string;
 
@@ -38,6 +39,12 @@ const materialModules = [
   MatInputModule,
   MatIconModule,
 ];
+
+export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
+  return localStorageSync({keys: ['testbefund'], rehydrate: true})(reducer);
+}
+
+const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
 
 @NgModule({
   declarations: [
@@ -57,7 +64,7 @@ const materialModules = [
     AppRoutingModule,
     StoreModule.forRoot({
       testbefund: testbefundReducer
-    }),
+    }, {metaReducers}),
     EffectsModule.forRoot([TestbefundEffects]),
     BrowserAnimationsModule,
     ...materialModules,
