@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
+import {createTestContainerRequestSchema} from '../../../utils/json-schemas';
+import Ajv from 'ajv';
 
 @Component({
   selector: 'app-create-single-test-code',
@@ -8,9 +10,7 @@ import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest'
 })
 export class CreateSingleTestCodeComponent implements OnInit {
 
-  editorOptions = {theme: 'vs-dark', language: 'javascript'};
-
-  error: string;
+  errors: string[];
 
   @Input()
   request: CreateTestContainerRequest;
@@ -36,25 +36,23 @@ export class CreateSingleTestCodeComponent implements OnInit {
     try {
       const res = this.validate(JSON.parse(value));
       if (res) {
-        this.error = '';
+        this.errors = [];
         this.requestChange.emit(res);
       }
     } catch (ignored) {
-      this.error = 'Ungültige Test-Spec. Änderungen werden nicht übernommen';
+      this.errors = ['Ungültige Test-Spec. Änderungen werden nicht übernommen'];
     }
   }
 
   private validate(request: any): CreateTestContainerRequest {
-    // TODO replace with a better validator
-    const keys = Object.keys(request);
-    if (keys.indexOf('clientId') < 0) {
-      this.error = 'Ungültige Spec: Feld \'clientId\' fehlt.';
+    const schema = createTestContainerRequestSchema;
+    const ajv = new Ajv({allErrors: true});
+    const valid = ajv.validate(schema, request);
+    if (!valid) {
+      this.errors = ajv.errorsText().split(',');
       return null;
+    } else {
+      return request as CreateTestContainerRequest;
     }
-    if (keys.indexOf('testRequests') < 0) {
-      this.error = 'Ungültige Spec: \'testRequests\' fehlt.';
-      return null;
-    }
-    return request as CreateTestContainerRequest;
   }
 }

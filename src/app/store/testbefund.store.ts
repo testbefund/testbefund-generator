@@ -14,8 +14,13 @@ export const testbefundDefaultStore: TestbefundStore = {
   clientsLoading: false,
   containersToCreate: 4,
   request: {
-    clientId: null,
-    testRequests: []
+    clientId: '',
+    testRequests: [
+      {
+        title: '',
+        icdCode: ''
+      }
+    ]
   },
   container: null,
   containerCreating: false

@@ -1,4 +1,7 @@
-<span *ngIf="error" class="code-error">{{error}}</span>
+<div *ngIf="errors" class="code-error">
+  <span *ngFor="let error of errors">{{error}}</span>
+</div>
+<!--suppress HtmlFormInputWithoutLabel -->
 <textarea cols="63" [rows]="countRows()"
           [ngModel]="requestAsJson()"
           (ngModelChange)="updateContainer($event)">
