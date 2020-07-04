@@ -29,6 +29,9 @@ import {CreateSingleTestCodeComponent} from './components/create-test/create-sin
 import { CreateTestControlsComponent } from './components/create-test/create-test-controls/create-test-controls.component';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { CreateTestDefinitionComponent } from './components/create-test/create-test-definition/create-test-definition.component';
+import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 declare const TESTBEFUND_API_URL: string;
 
@@ -40,6 +43,8 @@ const materialModules = [
   MatInputModule,
   MatIconModule,
   MatButtonToggleModule,
+  MatExpansionModule,
+  MatToolbarModule,
 ];
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -57,6 +62,7 @@ const metaReducers: Array<MetaReducer<any, any>> = [localStorageSyncReducer];
     CreateTestInfoComponent,
     CreateSingleTestCodeComponent,
     CreateTestControlsComponent,
+    CreateTestDefinitionComponent,
   ],
   imports: [
     BrowserModule,

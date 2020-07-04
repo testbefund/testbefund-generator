@@ -15,8 +15,6 @@ import {LabelSize} from '../../store/app.types';
 })
 export class CreateTestComponent implements OnInit {
 
-  clients$: Observable<Client[]>;
-  request$: Observable<CreateTestContainerRequest>;
   testsToCreate$: Observable<number>;
   creating$: Observable<boolean>;
   labelSize$: Observable<LabelSize>;
@@ -27,27 +25,9 @@ export class CreateTestComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(TestbefundActions.loadClients());
-    this.clients$ = this.store.select(TestbefundSelectors.selectClients);
-    this.request$ = this.store.select(TestbefundSelectors.selectRequest);
     this.testsToCreate$ = this.store.select(TestbefundSelectors.selectContainersToCreate);
     this.creating$ = this.store.select(TestbefundSelectors.selectContainerCreating);
     this.labelSize$ = this.store.select(TestbefundSelectors.selectLabelSize);
-  }
-
-  trackByIndex = (index: number, obj: object): number => {
-    return index;
-  }
-
-  setClientId(clientId: string): void {
-    this.store.dispatch(TestbefundActions.setClientId({clientId}));
-  }
-
-  deleteTest(index: number): void {
-    this.store.dispatch(TestbefundActions.removeTestToCreate({index}));
-  }
-
-  updateTest(index: number, test: TestToCreate): void {
-    this.store.dispatch(TestbefundActions.updateTestToCreate({test, index}));
   }
 
   addTest(): void {
@@ -56,14 +36,6 @@ export class CreateTestComponent implements OnInit {
 
   generate(): void {
     this.store.dispatch(TestbefundActions.createTestContainer());
-  }
-
-  reloadClients(): void {
-    this.store.dispatch(TestbefundActions.loadClients());
-  }
-
-  setRequest(request: CreateTestContainerRequest): void {
-    this.store.dispatch(TestbefundActions.setRequest({request}));
   }
 
   setContainersToCreate(containersToCreate: number): void {

@@ -1,3 +1,7 @@
-<div class="app-container">
-  <router-outlet></router-outlet>
-</div>
+<mat-toolbar color="primary" style="display: flex">
+  Testbefund-Generator
+  <button style="margin-left: auto" mat-icon-button aria-label="opens testbefund" (click)="openTestbefund()">
+    <mat-icon>open_in_new</mat-icon>
+  </button>
+</mat-toolbar>
+<router-outlet></router-outlet>

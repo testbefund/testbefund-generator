@@ -1,26 +1,38 @@
-<button [disabled]="disabled"
-        style="margin-right: 16px"
-        mat-stroked-button (click)="add.emit()">
-  {{disabled ? 'QR Codes werden generiert' : 'Test Hinzufügen'}}
-</button>
-<button [disabled]="disabled" mat-stroked-button (click)="generate.emit()">
-  {{disabled ? 'QR Codes werden generiert...' : 'QR Codes Generieren'}}
-</button>
-<mat-button-toggle-group aria-label="Label Size" [ngModel]="labelSize" (ngModelChange)="labelSizeChange.emit($event)">
-  <mat-button-toggle value="20x20">20x20</mat-button-toggle>
-  <mat-button-toggle value="70x50">70x50</mat-button-toggle>
-</mat-button-toggle-group>
-<mat-form-field style="margin-left: 8px">
-  <mat-label>Test Anzahl</mat-label>
-  <mat-select [disabled]="disabled" [ngModel]="testsToCreate" (ngModelChange)="testsToCreateChange.emit($event)">
-    <mat-option [value]="1">1</mat-option>
-    <mat-option [value]="2">2</mat-option>
-    <mat-option [value]="3">3</mat-option>
-    <mat-option [value]="4">4</mat-option>
-    <mat-option [value]="8">8</mat-option>
-    <mat-option [value]="16">16</mat-option>
-    <mat-option [value]="32">32</mat-option>
-    <mat-option [value]="64">64</mat-option>
-  </mat-select>
-</mat-form-field>
+<div class="controls-element">
+  <button [disabled]="disabled" mat-stroked-button (click)="generate.emit()">
+    {{disabled ? 'QR Codes werden generiert...' : 'QR Codes Generieren'}}
+  </button>
+</div>
+<div class="controls-element">
+  <span class="controls-header">Labelgröße</span>
+  <div>
+    Größe der Label (Höhe x Breite) auf dem finalen A4 PDF.
+  </div>
+  <mat-button-toggle-group aria-label="Label Size" [ngModel]="labelSize" (ngModelChange)="labelSizeChange.emit($event)">
+    <mat-button-toggle value="20x20">20x20</mat-button-toggle>
+    <mat-button-toggle value="70x50">70x50</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+<div class="controls-element">
+  <span class="controls-header">Test-Anzahl</span>
+  <div>
+    Anzahl der Tests, die erstellt werden sollen. Pro Test werden
+    4 QR Codes erstellt. 2 Patienten-Codes mit vollständiger URL und 2 Labor-Codes, die nur die ID enthalten
+  </div>
+  <div>
+    <mat-form-field style="margin-left: 8px">
+      <mat-label>Test Anzahl</mat-label>
+      <mat-select [disabled]="disabled" [ngModel]="testsToCreate" (ngModelChange)="testsToCreateChange.emit($event)">
+        <mat-option [value]="1">1</mat-option>
+        <mat-option [value]="2">2</mat-option>
+        <mat-option [value]="3">3</mat-option>
+        <mat-option [value]="4">4</mat-option>
+        <mat-option [value]="8">8</mat-option>
+        <mat-option [value]="16">16</mat-option>
+        <mat-option [value]="32">32</mat-option>
+        <mat-option [value]="64">64</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
 

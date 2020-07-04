@@ -12,8 +12,8 @@ const config70x50: TbfRenderConfig = {
   topOffset: 8.5,
   itemsPerRow: 5,
   height: 70,
-  xSpacing: 2.5,
-  width: 50,
+  xSpacing: 2,
+  width: 48,
   rowsPerPage: 14
 };
 

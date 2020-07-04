@@ -4,7 +4,7 @@ import {LabelSize} from '../../../store/app.types';
 @Component({
   selector: 'app-create-test-controls',
   templateUrl: './create-test-controls.component.html',
-  styleUrls: ['./create-test-controls.component.css']
+  styleUrls: ['./create-test-controls.component.scss']
 })
 export class CreateTestControlsComponent implements OnInit {
 

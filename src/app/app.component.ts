@@ -16,4 +16,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  openTestbefund(): void {
+    window.open('https://www.testbefund.de/', '_blank');
+  }
 }
