@@ -6,6 +6,7 @@ import {Client} from '@api/model/client';
 import {TestbefundSelectors} from '../../store/testbefund.selectors';
 import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
 import {TestToCreate} from '@api/model/testToCreate';
+import {LabelSize} from '../../store/app.types';
 
 @Component({
   selector: 'app-create-test',
@@ -18,7 +19,7 @@ export class CreateTestComponent implements OnInit {
   request$: Observable<CreateTestContainerRequest>;
   testsToCreate$: Observable<number>;
   creating$: Observable<boolean>;
-
+  labelSize$: Observable<LabelSize>;
 
   constructor(private store: Store) {
   }
@@ -30,6 +31,7 @@ export class CreateTestComponent implements OnInit {
     this.request$ = this.store.select(TestbefundSelectors.selectRequest);
     this.testsToCreate$ = this.store.select(TestbefundSelectors.selectContainersToCreate);
     this.creating$ = this.store.select(TestbefundSelectors.selectContainerCreating);
+    this.labelSize$ = this.store.select(TestbefundSelectors.selectLabelSize);
   }
 
   trackByIndex = (index: number, obj: object): number => {
@@ -66,5 +68,9 @@ export class CreateTestComponent implements OnInit {
 
   setContainersToCreate(containersToCreate: number): void {
     this.store.dispatch(TestbefundActions.setContainersToCreate({containersToCreate}));
+  }
+
+  setLabelSize(labelSize: LabelSize): void {
+    this.store.dispatch(TestbefundActions.setLabelSize({labelSize}));
   }
 }

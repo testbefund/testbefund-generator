@@ -6,6 +6,10 @@
 <button [disabled]="disabled" mat-stroked-button (click)="generate.emit()">
   {{disabled ? 'QR Codes werden generiert...' : 'QR Codes Generieren'}}
 </button>
+<mat-button-toggle-group aria-label="Label Size" [ngModel]="labelSize" (ngModelChange)="labelSizeChange.emit($event)">
+  <mat-button-toggle value="20x20">20x20</mat-button-toggle>
+  <mat-button-toggle value="70x50">70x50</mat-button-toggle>
+</mat-button-toggle-group>
 <mat-form-field style="margin-left: 8px">
   <mat-label>Test Anzahl</mat-label>
   <mat-select [disabled]="disabled" [ngModel]="testsToCreate" (ngModelChange)="testsToCreateChange.emit($event)">
@@ -19,3 +23,4 @@
     <mat-option [value]="64">64</mat-option>
   </mat-select>
 </mat-form-field>
+

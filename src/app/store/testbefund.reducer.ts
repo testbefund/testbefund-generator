@@ -70,6 +70,7 @@ const reducer = createReducer(testbefundDefaultStore,
   on(TestbefundActions.createTestContainer, state => ({...state, containerCreating: true})),
   on(TestbefundActions.createTestContainerFailed, state => ({...state, containerCreating: false})),
   on(TestbefundActions.createTestContainerSuccess, state => ({...state, containerCreating: false})),
+  on(TestbefundActions.setLabelSize, (state, {labelSize}) => ({...state, labelSize})),
 );
 
 export function testbefundReducer(state: TestbefundStore, action: Action): TestbefundStore {

@@ -3,6 +3,7 @@ import {Client} from '@api/model/client';
 import {TestToCreate} from '@api/model/testToCreate';
 import {TestContainer} from '@api/model/testContainer';
 import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
+import {LabelSize} from './app.types';
 
 export const TestbefundActions = {
   loadClients: createAction('[Testbefund] Load clients'),
@@ -17,4 +18,5 @@ export const TestbefundActions = {
   createTestContainerFailed: createAction('[Testbefund] Create test container failed'),
   setClientId: createAction('[Testbefund] Create client id', props<{clientId: string}>()),
   setContainersToCreate: createAction('[Testbefund] set containers to create', props<{containersToCreate: number}>()),
+  setLabelSize: createAction('[Testbefund] set label size', props<{labelSize: LabelSize}>()),
 };

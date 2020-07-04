@@ -28,6 +28,7 @@ import {CreateTestInfoComponent} from './components/create-test/create-test-info
 import {CreateSingleTestCodeComponent} from './components/create-test/create-single-test-code/create-single-test-code.component';
 import { CreateTestControlsComponent } from './components/create-test/create-test-controls/create-test-controls.component';
 import { localStorageSync } from 'ngrx-store-localstorage';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 declare const TESTBEFUND_API_URL: string;
 
@@ -38,6 +39,7 @@ const materialModules = [
   MatButtonModule,
   MatInputModule,
   MatIconModule,
+  MatButtonToggleModule,
 ];
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {

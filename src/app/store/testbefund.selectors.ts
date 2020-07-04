@@ -8,4 +8,5 @@ export const TestbefundSelectors = {
   selectRequest: createSelector(selectFeature, s1 => s1.request),
   selectContainersToCreate: createSelector(selectFeature, s1 => s1.containersToCreate),
   selectContainerCreating: createSelector(selectFeature, s1 => s1.containerCreating),
+  selectLabelSize: createSelector(selectFeature, s1 => s1.labelSize),
 };

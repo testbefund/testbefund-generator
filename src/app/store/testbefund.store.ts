@@ -1,4 +1,5 @@
 import {Client, CreateTestContainerRequest, TestContainer} from '../generated/testbefund-api';
+import {LabelSize} from './app.types';
 
 export interface TestbefundStore {
   clients: Client[];
@@ -7,6 +8,7 @@ export interface TestbefundStore {
   containersToCreate: number;
   container: TestContainer;
   containerCreating: boolean;
+  labelSize: LabelSize;
 }
 
 export const testbefundDefaultStore: TestbefundStore = {
@@ -23,5 +25,6 @@ export const testbefundDefaultStore: TestbefundStore = {
     ]
   },
   container: null,
-  containerCreating: false
+  containerCreating: false,
+  labelSize: '70x50',
 };

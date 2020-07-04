@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {LabelSize} from '../../../store/app.types';
 
 @Component({
   selector: 'app-create-test-controls',
@@ -13,6 +14,12 @@ export class CreateTestControlsComponent implements OnInit {
   @Output()
   testsToCreateChange = new EventEmitter<number>();
 
+  @Input()
+  labelSize: LabelSize;
+
+  @Output()
+  labelSizeChange = new EventEmitter<LabelSize>();
+
   @Output()
   generate = new EventEmitter();
 
@@ -22,7 +29,8 @@ export class CreateTestControlsComponent implements OnInit {
   @Input()
   disabled: boolean;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

@@ -13,6 +13,7 @@ import {TestbefundSelectors} from './testbefund.selectors';
 import {NotificationService} from '../service/notification.service';
 import {PdfCreatorService} from '../service/pdf-creator.service';
 import {fromPromise} from 'rxjs/internal-compatibility';
+import {LabelSize} from './app.types';
 
 @Injectable()
 export class TestbefundEffects {
@@ -26,9 +27,10 @@ export class TestbefundEffects {
     ofType(TestbefundActions.createTestContainer),
     withLatestFrom(
       this.store.select(TestbefundSelectors.selectRequest),
-      this.store.select(TestbefundSelectors.selectContainersToCreate)
+      this.store.select(TestbefundSelectors.selectContainersToCreate),
+      this.store.select(TestbefundSelectors.selectLabelSize),
     ),
-    switchMap(([_, request, containersToCreate]) => this.createContainer(request, containersToCreate)),
+    switchMap(([_, request, containersToCreate, size]) => this.createContainer(request, containersToCreate, size)),
   ));
 
   constructor(private actions$: Actions,
@@ -51,10 +53,10 @@ export class TestbefundEffects {
     );
   }
 
-  private createContainer(request: CreateTestContainerRequest, count: number): Observable<Action> {
+  private createContainer(request: CreateTestContainerRequest, count: number, size: LabelSize): Observable<Action> {
     const observables = [...Array(count).keys()].map(i => this.testController.createTestContainerUsingPOST(request));
     return forkJoin(observables).pipe(
-      map(containers => fromPromise(this.pdfCreatorService.createAndDownloadPdf(containers))),
+      map(containers => fromPromise(this.pdfCreatorService.createAndDownloadPdf(containers, size))),
       switchMap(value => value),
       map(containers => TestbefundActions.createTestContainerSuccess({containers})),
       catchError(err => {

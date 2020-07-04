@@ -2,81 +2,84 @@ import {Injectable} from '@angular/core';
 // @ts-ignore
 import * as QRCode from 'easyqrcodejs';
 import jsPDF from 'jspdf';
-import {environment} from '../../environments/environment';
 import {TestContainer} from '@api/model/testContainer';
-import {partitionArray} from '../utils';
+import {CalculatedSheetItem, LabelSheetCalculatorService, TbfRenderConfig} from './label-sheet-calculator.service';
+import {LabelSize} from '../store/app.types';
 
 
-function labTitle(writeId: string): string {
-  const firstFive = writeId.slice(0, 4);
-  return `Labor Code (#${firstFive})`;
-}
+const config70x50: TbfRenderConfig = {
+  leftOffset: 5,
+  topOffset: 8.5,
+  itemsPerRow: 5,
+  height: 70,
+  xSpacing: 2.5,
+  width: 50,
+  rowsPerPage: 14
+};
 
-function patientTitle(readId: string): string {
-  const firstFive = readId.slice(0, 4);
-  const r = `Patienten Code (#${firstFive})`;
-  console.log('code ' + r);
-  return r;
-}
+const config20x20: TbfRenderConfig = {
+  leftOffset: 15,
+  topOffset: 8.5,
+  itemsPerRow: 9,
+  height: 20,
+  xSpacing: 2,
+  width: 18,
+  rowsPerPage: 14
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class PdfCreatorService {
 
-  constructor() {
+  constructor(private labelSheetCalculatorService: LabelSheetCalculatorService) {
   }
 
-  async createAndDownloadPdf(results: TestContainer[]): Promise<TestContainer[]> {
+  private static resolveConfig(size: LabelSize): TbfRenderConfig {
+    if (size === '20x20') {
+      return config20x20;
+    }
+    if (size === '70x50') {
+      return config70x50;
+    }
+    throw new Error('Unmapped size ' + size);
+  }
+
+  async createAndDownloadPdf(results: TestContainer[], size: LabelSize): Promise<TestContainer[]> {
     // Default iS A4, portrait mode, 210mm width, 297mm height
-    // Each QR code sticker will be 50mm width and 70mm height
-    // QR codes will have a margin of 2.5mm on each side, resulting in
-    // QR code image width of 45mm
-    // left and right margin are 5mm
-    // top and bottom margin are 8.5mm
-    // x = left to right
-    // y = top to bottom
     const date = new Date();
     const pdf = new jsPDF({unit: 'mm', format: 'a4'});
-
-    const partitions = partitionArray(results, 4)
-      .filter(arr => arr.length > 0);
-    const pagesToCreate = partitions.length - 1;
+    const calculatedSheetItems = this.labelSheetCalculatorService.calculateSheet(results, PdfCreatorService.resolveConfig(size));
+    const pagesToCreate = Math.ceil(calculatedSheetItems.length / 126) - 1;
     // PDFs always have one page after creation. Add one page for each partition, minus first page
     [...Array(pagesToCreate).keys()].forEach(() => pdf.addPage('a4', 'p'));
-    for (let i = 0; i < partitions.length; i++) {
+    for (const item of calculatedSheetItems) {
       // Using await here so pages don't get mixed up in case something happens concourrently
       // Important because we are using setTimeout further down.
-      await this.renderPage(pdf, partitions[i], i);
+      await this.renderSheetItem(item, pdf);
     }
     pdf.save(`QR_Codes_${date.toISOString()}.pdf`);
     return Promise.all(results);
   }
 
-  private renderPage(pdf: jsPDF, containers: TestContainer[], page: number): Promise<jsPDF> {
-    pdf.setPage(page);
-    const promises = containers.map((result, index) => this.renderContainer(pdf, result, index));
-    return Promise.all(promises).then(value => pdf);
+  private renderSheetItem(sheetItem: CalculatedSheetItem, pdf: jsPDF): Promise<jsPDF> {
+    // Options
+    const options = {
+      text: sheetItem.value,
+      title: sheetItem.title,
+      titleHeight: 40,
+      width: 300,
+      height: 300,
+    };
+    return this.renderQrCode(options)
+      .then(imageContent => {
+        // Remove the 'data:image/png;base64,' from image content.
+        const base64PNG = imageContent.substring(22, imageContent.length);
+        pdf.setPage(sheetItem.page + 1); // page is index-1 based. Our pages are zero-index based.
+        pdf.addImage(base64PNG, 'PNG', sheetItem.xPos, sheetItem.yPos, sheetItem.width, sheetItem.height);
+        return pdf;
+      });
   }
-
-  private renderContainer(pdf: jsPDF, result: TestContainer, row: number): Promise<jsPDF> {
-    return this.renderRow(pdf, result, row);
-  }
-
-  private renderRow(p: jsPDF, result: TestContainer, row: number): Promise<jsPDF> {
-    const readUrl = `${environment.testbefundPatientUrl}?readId=${result.readId}`;
-    const leftOffset = 5;
-    const topOffset = (row * 70) + 8.5;
-    const firstColOffset = leftOffset + 2.5;
-    const secondColOffset = firstColOffset + 50;
-    const thirdColOffset = secondColOffset + 50;
-    const fourthColOffset = thirdColOffset + 50;
-    return this.addQrCodeToPdf(p, readUrl, patientTitle(result.readId), firstColOffset, topOffset)
-      .then(pdf => this.addQrCodeToPdf(pdf, readUrl, patientTitle(result.readId), secondColOffset, topOffset))
-      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), thirdColOffset, topOffset))
-      .then(pdf => this.addQrCodeToPdf(pdf, result.writeId, labTitle(result.readId), fourthColOffset, topOffset));
-  }
-
 
   private renderQrCode(options: any): Promise<string> {
     return new Promise<string>(
@@ -91,28 +94,6 @@ export class PdfCreatorService {
         this.tryResolveImage(element, 0, resolve, reject);
       }
     );
-  }
-
-  private addQrCodeToPdf(pdfDocument: jsPDF, value: string, title: string, x: number, y: number): Promise<jsPDF> {
-    // Options
-    const options = {
-      text: value,
-      title,
-      titleHeight: 40,
-      width: 300,
-      height: 300,
-    };
-    return this.renderQrCode(options)
-      .then(imageContent => {
-        // Remove the 'data:image/png;base64,' from image content.
-        const base64PNG = imageContent.substring(22, imageContent.length);
-        console.log({base64PNG, imageContent, x, y});
-        // width:height factor = 0,881316
-        const factor = 0.881316;
-        const width = 45;
-        pdfDocument.addImage(base64PNG, 'PNG', x, y, width, width / factor);
-        return pdfDocument;
-      });
   }
 
   private tryResolveImage(element: HTMLElement, currentTry, resolve, reject): void {
@@ -134,5 +115,4 @@ export class PdfCreatorService {
       }
     }, 5);
   }
-
 }

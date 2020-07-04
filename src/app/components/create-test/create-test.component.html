@@ -12,6 +12,8 @@
     <app-create-test-controls (add)="addTest()"
                               (generate)="generate()"
                               [disabled]="creating$ | async"
+                              [labelSize]="labelSize$ | async"
+                              (labelSizeChange)="setLabelSize($event)"
                               [testsToCreate]="testsToCreate$ | async"
                               (testsToCreateChange)="setContainersToCreate($event)"></app-create-test-controls>
   </div>
