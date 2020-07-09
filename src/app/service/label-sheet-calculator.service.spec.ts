@@ -1,10 +1,10 @@
 import {LabelSheetCalculatorService, TbfRenderConfig} from './label-sheet-calculator.service';
-import {TestContainer} from '@api/model/testContainer';
+import {TestbefundTestContainer} from '@api/model/testbefundTestContainer';
 
 describe('LabelSheetCalculatorService', () => {
   let service: LabelSheetCalculatorService;
   let config: TbfRenderConfig;
-  let containers: TestContainer[] = [];
+  let containers: TestbefundTestContainer[] = [];
 
   beforeEach(() => {
     service = new LabelSheetCalculatorService();
@@ -17,7 +17,7 @@ describe('LabelSheetCalculatorService', () => {
       topOffset: 8.5,
       rowsPerPage: 14
     };
-    containers = [{readId: 'read-1234', writeId: 'write-1234', id: '1234'}];
+    containers = [{readId: 'read-1234', writeId: 'write-1234'}];
   });
 
   it('should be created', () => {
@@ -45,9 +45,9 @@ describe('LabelSheetCalculatorService', () => {
 
   it('should render the last item in a row', () => {
     containers = [
-      {readId: 'read-1', writeId: 'write-1', id: '1'},
-      {readId: 'read-2', writeId: 'write-2', id: '2'},
-      {readId: 'read-3', writeId: 'write-3', id: '3'},
+      {readId: 'read-1', writeId: 'write-1'},
+      {readId: 'read-2', writeId: 'write-2'},
+      {readId: 'read-3', writeId: 'write-3'},
     ];
     const result = service.calculateSheet(containers, config);
     expect(result.length).toBeGreaterThan(8);
@@ -61,9 +61,9 @@ describe('LabelSheetCalculatorService', () => {
 
   it('should render the first item in the second row', () => {
     containers = [
-      {readId: 'read-1', writeId: 'write-1', id: '1'},
-      {readId: 'read-2', writeId: 'write-2', id: '2'},
-      {readId: 'read-3', writeId: 'write-3', id: '3'},
+      {readId: 'read-1', writeId: 'write-1'},
+      {readId: 'read-2', writeId: 'write-2'},
+      {readId: 'read-3', writeId: 'write-3'},
     ];
     const result = service.calculateSheet(containers, config);
     expect(result.length).toBeGreaterThan(8);
@@ -75,10 +75,10 @@ describe('LabelSheetCalculatorService', () => {
     expect(lastItemInRow.value).toEqual('www.example.com?readId=read-3');
   });
 
-  function generateContainers(num: number): TestContainer[] {
-    const res: TestContainer[] = [];
+  function generateContainers(num: number): TestbefundTestContainer[] {
+    const res: TestbefundTestContainer[] = [];
     for (let i = 0; i < num; i++) {
-      res.push({readId: `read-${i + 1}`, writeId: `write-${i + 1}`, id: `${i + 1}`});
+      res.push({readId: `read-${i + 1}`, writeId: `write-${i + 1}`});
     }
     return res;
   }

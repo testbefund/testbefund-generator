@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
 import {createTestContainerRequestSchema} from '../../../utils/json-schemas';
 import Ajv from 'ajv';
+import {TestbefundTestContainerDefinition} from '@api/model/testbefundTestContainerDefinition';
 
 @Component({
   selector: 'app-create-single-test-code',
@@ -13,10 +13,10 @@ export class CreateSingleTestCodeComponent implements OnInit {
   errors: string[];
 
   @Input()
-  request: CreateTestContainerRequest;
+  request: TestbefundTestContainerDefinition;
 
   @Output()
-  requestChange = new EventEmitter<CreateTestContainerRequest>();
+  requestChange = new EventEmitter<TestbefundTestContainerDefinition>();
 
   constructor() {
   }
@@ -44,7 +44,7 @@ export class CreateSingleTestCodeComponent implements OnInit {
     }
   }
 
-  private validate(request: any): CreateTestContainerRequest {
+  private validate(request: any): TestbefundTestContainerDefinition {
     const schema = createTestContainerRequestSchema;
     const ajv = new Ajv({allErrors: true});
     const valid = ajv.validate(schema, request);
@@ -52,7 +52,7 @@ export class CreateSingleTestCodeComponent implements OnInit {
       this.errors = ajv.errorsText().split(',');
       return null;
     } else {
-      return request as CreateTestContainerRequest;
+      return request as TestbefundTestContainerDefinition;
     }
   }
 }

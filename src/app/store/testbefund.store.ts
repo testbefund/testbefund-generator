@@ -1,12 +1,16 @@
-import {Client, CreateTestContainerRequest, TestContainer} from '../generated/testbefund-api';
+import {
+  TestbefundIssuingOrganization,
+  TestbefundTestContainer,
+  TestbefundTestContainerDefinition
+} from '../generated/testbefund-api';
 import {LabelSize} from './app.types';
 
 export interface TestbefundStore {
-  clients: Client[];
+  clients: TestbefundIssuingOrganization[];
   clientsLoading: boolean;
-  request: CreateTestContainerRequest;
+  request: TestbefundTestContainerDefinition;
   containersToCreate: number;
-  container: TestContainer;
+  container: TestbefundTestContainer;
   containerCreating: boolean;
   labelSize: LabelSize;
 }
@@ -16,8 +20,8 @@ export const testbefundDefaultStore: TestbefundStore = {
   clientsLoading: false,
   containersToCreate: 4,
   request: {
-    clientId: '',
-    testRequests: [
+    issuingOrganization: '',
+    testDefinitions: [
       {
         title: '',
         icdCode: ''

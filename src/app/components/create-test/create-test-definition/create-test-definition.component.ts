@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {TestbefundActions} from '../../../store/testbefund.actions';
-import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
 import {Store} from '@ngrx/store';
-import {TestToCreate} from '@api/model/testToCreate';
 import {TestbefundSelectors} from '../../../store/testbefund.selectors';
 import {Observable} from 'rxjs';
-import {Client} from '@api/model/client';
+import {TestbefundIssuingOrganization} from '@api/model/testbefundIssuingOrganization';
+import {TestbefundTestContainerDefinition} from '@api/model/testbefundTestContainerDefinition';
+import {TestbefundTestDefinition} from '@api/model/testbefundTestDefinition';
 
 @Component({
   selector: 'app-create-test-definition',
@@ -14,8 +14,8 @@ import {Client} from '@api/model/client';
 })
 export class CreateTestDefinitionComponent implements OnInit {
 
-  clients$: Observable<Client[]>;
-  request$: Observable<CreateTestContainerRequest>;
+  clients$: Observable<TestbefundIssuingOrganization[]>;
+  request$: Observable<TestbefundTestContainerDefinition>;
   creating$: Observable<boolean>;
 
   constructor(private store: Store) { }
@@ -30,7 +30,7 @@ export class CreateTestDefinitionComponent implements OnInit {
     this.store.dispatch(TestbefundActions.loadClients());
   }
 
-  setRequest(request: CreateTestContainerRequest): void {
+  setRequest(request: TestbefundTestContainerDefinition): void {
     this.store.dispatch(TestbefundActions.setRequest({request}));
   }
 
@@ -38,15 +38,15 @@ export class CreateTestDefinitionComponent implements OnInit {
     return index;
   }
 
-  setClientId(clientId: string): void {
-    this.store.dispatch(TestbefundActions.setClientId({clientId}));
+  setClientId(issuingOrganization: string): void {
+    this.store.dispatch(TestbefundActions.setClientId({issuingOrganization}));
   }
 
   deleteTest(index: number): void {
     this.store.dispatch(TestbefundActions.removeTestToCreate({index}));
   }
 
-  updateTest(index: number, test: TestToCreate): void {
+  updateTest(index: number, test: TestbefundTestDefinition): void {
     this.store.dispatch(TestbefundActions.updateTestToCreate({test, index}));
   }
 

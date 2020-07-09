@@ -2,10 +2,10 @@ export const createTestContainerRequestSchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
   properties: {
-    clientId: {
+    issuingOrganization: {
       type: 'string'
     },
-    testRequests: {
+    testDefinitions: {
       description: 'One test specification for each test',
       type: 'array',
       items: {
@@ -28,7 +28,7 @@ export const createTestContainerRequestSchema = {
     }
   },
   required: [
-    'clientId',
-    'testRequests'
+    'issuingOrganization',
+    'testDefinitions'
   ]
 };

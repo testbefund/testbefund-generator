@@ -1,19 +1,18 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {
-  ClientControllerService,
-  CreateTestContainerRequest,
-  TestControllerV1Service
-} from '../generated/testbefund-api';
 import {TestbefundActions} from './testbefund.actions';
-import {catchError, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
-import {forkJoin, from, Observable, of} from 'rxjs';
+import {catchError, map, switchMap, withLatestFrom} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
 import {Action, Store} from '@ngrx/store';
 import {TestbefundSelectors} from './testbefund.selectors';
 import {NotificationService} from '../service/notification.service';
 import {PdfCreatorService} from '../service/pdf-creator.service';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {LabelSize} from './app.types';
+import {TestService} from '@api/api/test.service';
+import {TestbefundIssuingOrganization} from '@api/model/testbefundIssuingOrganization';
+import {OrganizationService} from '@api/api/organization.service';
+import {TestbefundTestContainerDefinition} from '@api/model/testbefundTestContainerDefinition';
 
 @Injectable()
 export class TestbefundEffects {
@@ -37,13 +36,13 @@ export class TestbefundEffects {
               private store: Store,
               private notificationService: NotificationService,
               private pdfCreatorService: PdfCreatorService,
-              private testController: TestControllerV1Service,
-              private clientController: ClientControllerService) {
+              private testController: TestService,
+              private organizationService: OrganizationService) {
 
   }
 
   private loadClients(): Observable<Action> {
-    return this.clientController.getAllClientsUsingGET().pipe(
+    return this.organizationService.getAllOrganizations().pipe(
       map(clients => TestbefundActions.loadClientsSuccess({clients})),
       catchError(err => {
         console.log(err);
@@ -53,8 +52,8 @@ export class TestbefundEffects {
     );
   }
 
-  private createContainer(request: CreateTestContainerRequest, count: number, size: LabelSize): Observable<Action> {
-    const observables = [...Array(count).keys()].map(i => this.testController.createTestContainerUsingPOST(request));
+  private createContainer(request: TestbefundTestContainerDefinition, count: number, size: LabelSize): Observable<Action> {
+    const observables = [...Array(count).keys()].map(i => this.testController.createTestContainer(request));
     return forkJoin(observables).pipe(
       map(containers => fromPromise(this.pdfCreatorService.createAndDownloadPdf(containers, size))),
       switchMap(value => value),
