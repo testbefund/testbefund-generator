@@ -2,10 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {TestbefundActions} from '../../store/testbefund.actions';
 import {Observable} from 'rxjs';
-import {Client} from '@api/model/client';
 import {TestbefundSelectors} from '../../store/testbefund.selectors';
-import {CreateTestContainerRequest} from '@api/model/createTestContainerRequest';
-import {TestToCreate} from '@api/model/testToCreate';
 import {LabelSize} from '../../store/app.types';
 
 @Component({

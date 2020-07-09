@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 // @ts-ignore
 import * as QRCode from 'easyqrcodejs';
 import jsPDF from 'jspdf';
-import {TestContainer} from '@api/model/testContainer';
 import {CalculatedSheetItem, LabelSheetCalculatorService, TbfRenderConfig} from './label-sheet-calculator.service';
 import {LabelSize} from '../store/app.types';
+import {TestbefundTestContainer} from '@api/model/testbefundTestContainer';
 
 
 const config70x50: TbfRenderConfig = {
@@ -45,7 +45,7 @@ export class PdfCreatorService {
     throw new Error('Unmapped size ' + size);
   }
 
-  async createAndDownloadPdf(results: TestContainer[], size: LabelSize): Promise<TestContainer[]> {
+  async createAndDownloadPdf(results: TestbefundTestContainer[], size: LabelSize): Promise<TestbefundTestContainer[]> {
     // Default iS A4, portrait mode, 210mm width, 297mm height
     const date = new Date();
     const pdf = new jsPDF({unit: 'mm', format: 'a4'});

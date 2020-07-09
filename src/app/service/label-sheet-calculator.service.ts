@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {TestContainer} from '../generated/testbefund-api';
 import {environment} from '../../environments/environment';
+import {TestbefundTestContainer} from '@api/model/testbefundTestContainer';
 
 
 /**
@@ -39,7 +39,7 @@ export interface CalculatedSheetItem {
 
 interface ContainerToRender {
   type: 'read' | 'write';
-  container: TestContainer;
+  container: TestbefundTestContainer;
 }
 
 function labTitle(writeId: string): string {
@@ -62,13 +62,13 @@ export class LabelSheetCalculatorService {
   }
 
 
-  calculateSheet(containers: TestContainer[], config: TbfRenderConfig): CalculatedSheetItem[] {
+  calculateSheet(containers: TestbefundTestContainer[], config: TbfRenderConfig): CalculatedSheetItem[] {
     return containers.map(container => this.expandedContainer(container))
       .reduce((previousValue, currentValue) => [...previousValue, ...currentValue], [])
       .map((container, index) => this.mapContainer(container, config, index));
   }
 
-  private expandedContainer(container: TestContainer): ContainerToRender[] {
+  private expandedContainer(container: TestbefundTestContainer): ContainerToRender[] {
     return [
       {container, type: 'read'},
       {container, type: 'read'},

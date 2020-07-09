@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "swagger-gen": "openapi-generator generate -i swagger.json -g typescript-angular -o src/app/generated/testbefund-api --additional-properties=\"ngVersion=9.1.1\""
+    "swagger-gen": "openapi-generator generate -i testbefund-api.v1.yaml -g typescript-angular -o src/app/generated/testbefund-api --additional-properties=\"ngVersion=9.1.1\""
   },
   "private": true,
   "dependencies": {

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TestToCreate} from '@api/model/testToCreate';
+import {TestbefundTestDefinition} from '@api/model/testbefundTestDefinition';
 
 @Component({
   selector: 'app-create-test-single-test',
@@ -9,13 +9,13 @@ import {TestToCreate} from '@api/model/testToCreate';
 export class CreateTestSingleTestComponent implements OnInit {
 
   @Input()
-  test: TestToCreate;
+  test: TestbefundTestDefinition;
 
   @Output()
   delete = new EventEmitter<void>();
 
   @Output()
-  update = new EventEmitter<TestToCreate>()
+  update = new EventEmitter<TestbefundTestDefinition>();
 
   constructor() {
   }
