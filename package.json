@@ -25,7 +25,7 @@
     "@angular/router": "~9.1.1",
     "@ngrx/effects": "^9.2.0",
     "@ngrx/store": "^9.2.0",
-    "ajv": "^6.12.2",
+    "ajv": "^6.12.3",
     "angular-oauth2-oidc": "^9.2.2",
     "easyqrcodejs": "^3.5.2",
     "jspdf": "^1.5.3",
